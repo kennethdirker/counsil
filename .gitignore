@@ -1,1 +1,8 @@
-env
+.venv
+.idea
+__pycache__
+/.flaskenv
+/.env
+node_modules
+/app.db
+/logs/*.log

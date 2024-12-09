@@ -1,0 +1,2 @@
+FLASK_APP=design_by_committee.py
+FLASK_DEBUG=1

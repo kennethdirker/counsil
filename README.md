@@ -11,7 +11,6 @@ pip install -r requirements.txt
 If you received a DB copy, you're done now. Otherwise, initialize the database:
 
 ```bash
-flask db init
 flask db upgrade
 ```
 

@@ -2,11 +2,17 @@
 {% import "bootstrap_wtf.html" as wtf %}
 
 {% block content %}
-    <h1>{{ _('Sign In') }}</h1>
+    {{ theme.h1(_('Sign In')) }}
+
     {{ wtf.quick_form(form) }}
-    <p>{{ _('New User?') }} <a href="{{ url_for('auth.register') }}">{{ _('Click to Register!') }}</a></p>
+
+<div class="flex flex-col gap-2 mt-2">
+
+    <p>{{ _('New User?') }} {{theme.nav_link(_('Click to Register!'), url_for('auth.register'), 'p-1 text-yellow-200') }}</p>
+
     <p>
         {{ _('Forgot Your Password?') }}
-        <a href="{{ url_for('auth.reset_password_request') }}">{{ _('Click to Reset It') }}</a>
+        {{ theme.nav_link(_('Click to Reset It'), url_for('auth.reset_password_request'), 'p-1 text-yellow-200')  }}
     </p>
+    </div>
 {% endblock %}

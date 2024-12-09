@@ -1,0 +1,9 @@
+{% macro h1(title) %}
+<h1 class="text-3xl">{{title}}</h1>
+{% endmacro %}
+
+
+{% macro nav_link(title, destination, merge='') %}
+<span><a class="bg-slate-600 hover:underline {{merge}}"
+         href="{{destination}}">{{title}}</a></span>
+{% endmacro %}

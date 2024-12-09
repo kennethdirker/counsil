@@ -29,6 +29,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
+{% import "theme.html" as theme %}
+{% import "wtf.html" as wtf %}
+
 <body class="bg-gray-100">
 <div class="flex flex-col min-h-screen">
 
@@ -43,11 +46,18 @@
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-info" role="alert">{{ message }}</div>
-    {% endfor %}
+    <div class="py-4">
+        <div class="container mx-auto">
+            {% for message in messages %}
+            <div class="mx-4 my-2 p-2 bg-yellow-200">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
     {% endif %}
     {% endwith %}
+
 
     <div class="grow container mx-auto">
         <div class="flex flex-row flex-wrap py-4">
@@ -55,26 +65,17 @@
                 <div class="sticky top-0 p-4 w-full">
                     <!-- navigation -->
                     <ul class="">
-                        <li class="">
-                            <a class="" href="{{ url_for('main.index') }}">{{ _('Home') }}</a>
-                        </li>
+                        <li>{{ theme.nav_link( _('Home'), url_for('main.index'), 'hover:text-yellow-200') }}</li>
                     </ul>
 
                     <ul>
                         {% if current_user.is_anonymous %}
-                        <li class="nav-item">
-                            <a href="{{ url_for('auth.login') }}">{{ _('Login') }}</a>
-                        </li>
+                        <li>{{ theme.nav_link( _('Login'), url_for('auth.login'), 'hover:text-yellow-200') }}</li>
                         {% else %}
-                        <li>
-                            <a
-                                    href="{{ url_for('main.user', username=current_user.username) }}">{{ _('Profile')
-                                }}</a>
+                        <li>{{ theme.nav_link( _('Profile'), url_for('main.user', username=current_user.username),
+                            'hover:text-yellow-200') }}
                         </li>
-                        <li>
-                            <a href="{{ url_for('auth.logout') }}">{{ _('Logout')
-                                }}</a>
-                        </li>
+                        <li>{{ theme.nav_link( _('Logout'), url_for('auth.logout'), 'hover:text-yellow-200') }}</li>
                         {% endif %}
                     </ul>
 

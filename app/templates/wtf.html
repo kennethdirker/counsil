@@ -1,0 +1,108 @@
+{% macro form_field(field, autofocus) %}
+
+
+
+{%- if field.type == 'TextAreaField' %}
+<div class="grid col-span-2 grid-cols-subgrid">
+    <div class="">
+        {{ field.label(class='p-1') }}
+    </div>
+    <div class="">
+        {% if autofocus %}
+        {{ field(class='w-full p-1' + (' text-red-500' if field.errors else ''), autofocus=True) }}
+        {% else %}
+        {{ field(class='w-full p-1' + (' text-red-500' if field.errors else '')) }}
+        {% endif %}
+
+        {%- for error in field.errors %}
+        <div class="text-red-500">{{ error }}</div>
+        {%- endfor %}
+    </div>
+</div>
+
+{%- elif field.type == 'BooleanField' %}
+<div class="grid col-span-2 grid-cols-subgrid">
+    <div class="col-start-2 flex flex-row gap-2">
+    {{ field(class='grow-0') }}
+    {{ field.label(class='grow') }}
+    </div>
+</div>
+
+{%- elif field.type == 'RadioField' %}
+{{ field.label(class='') }}
+{%- for item in field %}
+<div class="{% if loop.last %} mb-3{% endif %}">
+    {{ item(class='') }}
+    {{ item.label(class='') }}
+</div>
+{%- endfor %}
+
+{%- elif field.type == 'SelectField' %}
+{{ field.label(class='') }}
+{{ field(class='') }}
+
+
+
+{%- elif field.type == 'SubmitField' %}
+<div class="grid col-span-2 grid-cols-subgrid">
+    <div class="col-start-2 justify-self-end">
+        {{ field(class='p-2 border-2 border-slate-600 rounded-lg shadow-sm shadow-slate-600') }}
+    </div>
+</div>
+
+{% else %}
+
+<div class="grid col-span-2 grid-cols-subgrid">
+    <div class="">
+        {{ field.label(class='p-1') }}
+    </div>
+    <div class="">
+        {% if autofocus %}
+        {{ field(class='w-full p-1' + (' text-red-500' if field.errors else ''), autofocus=True) }}
+        {% else %}
+        {{ field(class='w-full p-1' + (' text-red-500' if field.errors else '')) }}
+        {% endif %}
+
+        {%- for error in field.errors %}
+        <div class="text-red-500">{{ error }}</div>
+        {%- endfor %}
+    </div>
+</div>
+
+
+
+{%- endif %}
+{% endmacro %}
+
+
+{% macro quick_form(form, action="", method="post", id="", novalidate=False) %}
+<form
+        {%- if action !=None %} action="{{ action }}" {% endif -%}
+        {%- if method %} method="{{ method }}" {% endif %}
+        {%- if id %} id="{{ id }}" {% endif -%}
+        {%- if novalidate %} novalidate{% endif -%}>
+    {{ form.hidden_tag() }}
+
+    {%- for field, errors in form.errors.items() %}
+    {%- if form[field].widget.input_type == 'hidden' %}
+    {%- for error in errors %}
+    <div class="text-red-600">{{ error }}</div>
+    {%- endfor %}
+    {%- endif %}
+    {%- endfor %}
+
+    <div class="grid grid-cols-[auto_1fr] mt-4 gap-4">
+        {% set ns = namespace(first_field=true) %}
+        {%- for field in form %}
+        {% if field.widget.input_type != 'hidden' -%}
+        {{ form_field(field, ns.first_field) }}
+        {% set ns.first_field = false %}
+        {%- endif %}
+        {%- endfor %}
+    </div>
+
+</form>
+{% endmacro %}
+
+
+

@@ -1,16 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <table class="table table-hover">
-        <tr>
-            <td width="256px"><img src="{{ user.avatar(256) }}"></td>
-            <td>
-                <h1>{{ _('User') }}: {{ user.username }}</h1>
-                {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
-                {% if user.last_seen %}
-                <p>{{ _('Last seen on') }}: {{ moment(user.last_seen).format('LLL') }}</p>
-                {% endif %}
-            </td>
-        </tr>
-    </table>
+<div class="flex flex-row gap-4">
+    <div class="grow-0">
+        <img src="{{ user.avatar(256) }}">
+    </div>
+
+    <div class="grow flex flex-col gap-2">
+        {{ theme.h1(user.username) }}
+
+        {% if user.about_me %}
+        <p class="italic">{{ user.about_me }}</p>
+        {% endif %}
+
+        {% if user.last_seen %}
+        <p>{{ _('Last seen on') }}: {{ moment(user.last_seen).format('LLL') }}</p>
+        {% endif %}
+
+        {% if user == current_user %}
+        <p>
+            {{ theme.nav_link( _('Edit Profile'), url_for('main.edit_profile'), 'p-1 text-yellow-200' ) }}
+        </p>
+        {% endif %}
+
+    </div>
+</div>
+
 {% endblock %}

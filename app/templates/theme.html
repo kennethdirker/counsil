@@ -4,6 +4,16 @@
 
 
 {% macro nav_link(title, destination, merge='') %}
-<span><a class="bg-slate-600 hover:underline {{merge}}"
+<span><a class="bg-slate-600 text-gray-100 hover:text-yellow-200 hover:underline {{merge}}"
+         href="{{destination}}">{{title}}</a></span>
+{% endmacro %}
+
+{% macro button_link(title, destination, merge='') %}
+<span><a class="p-2 rounded-lg shadow-sm shadow-slate-600 bg-slate-600 text-yellow-200 hover:underline {{merge}}"
+         href="{{destination}}">{{title}}</a></span>
+{% endmacro %}
+
+{% macro link_link(title, destination, merge='') %}
+<span><a class="underline hover:italic {{merge}}"
          href="{{destination}}">{{title}}</a></span>
 {% endmacro %}

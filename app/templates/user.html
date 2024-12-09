@@ -19,7 +19,7 @@
 
         {% if user == current_user %}
         <p>
-            {{ theme.nav_link( _('Edit Profile'), url_for('main.edit_profile'), 'p-1 text-yellow-200' ) }}
+            {{ theme.button_link( _('Edit Profile'), url_for('main.edit_profile')) }}
         </p>
         {% endif %}
 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>{{ _('Hi, %(username)s!', username=current_user.username) }}</h1>
+    {{ theme.h1(_('Hi, %(username)s!', username=current_user.username)) }}
     {% if form %}
     {{ wtf.quick_form(form) }}
     {% endif %}

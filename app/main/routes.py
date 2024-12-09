@@ -4,8 +4,8 @@ from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 import sqlalchemy as sa
 from app import db
-from app.main.forms import EditProfileForm, EmptyForm
-from app.models import User
+from app.main.forms import EditProfileForm, EmptyForm, NewDiscussionForm
+from app.models import User, Discussion
 from app.main import bp
 
 
@@ -26,9 +26,6 @@ def index():
         "index.html",
         title=_("Home")
     )
-
-
-
 
 
 @bp.route("/user/<username>")
@@ -57,3 +54,25 @@ def edit_profile():
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
     return render_template("edit_profile.html", title=_("Edit Profile"), form=form)
+
+
+@bp.route("/discussions", methods=["GET", "POST"])
+@login_required
+def discussions_index():
+    form = NewDiscussionForm()
+    if form.validate_on_submit():
+        discussion = Discussion(title=form.title.data)
+        db.session.add(discussion)
+        db.session.commit()
+        flash(_("New discussion started!"))
+        return redirect(url_for("main.discussions_index"))
+    query = sa.select(Discussion)
+    discussions = db.session.scalars(query).all()
+    return render_template("discussions/index.html", title=_("Discussions"), discussions=discussions, form=form)
+
+
+@bp.route("/discussions/<id>", methods=["GET", "POST"])
+@login_required
+def discussions_view(id):
+    discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == id))
+    return render_template("discussions/view.html", title=discussion.title, discussion=discussion)

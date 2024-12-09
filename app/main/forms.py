@@ -27,3 +27,8 @@ class EditProfileForm(FlaskForm):
 
 class EmptyForm(FlaskForm):
     submit = SubmitField("Submit")
+
+
+class NewDiscussionForm(FlaskForm):
+    title = StringField(_l("Topic"), validators=[DataRequired(), Length(max=256)])
+    submit = SubmitField("Create")

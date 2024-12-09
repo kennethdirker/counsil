@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ theme.h1(_('Discussions')) }}
+
+{% if form %}
+<div class="mt-4 border border-slate-600 rounded-md shadow-md shadow-slate-600 p-2 flex flex-col gap-2">
+    <h2 class="text-lg">{{_('Start a new discussion')}}</h2>
+    {{ wtf.quick_form(form) }}
+</div>
+{% endif %}
+
+{% if discussions %}
+<div class="mt-4 border border-slate-600 rounded-md shadow-md shadow-slate-600 p-2 flex flex-col gap-2">
+    <h2 class="text-lg">{{_('Join an ongoing discussion')}}</h2>
+    <ul>
+    {% for discussion in discussions %}
+    <li>{{ theme.link_link(discussion.title, url_for("main.discussions_view", id=discussion.id)) }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}

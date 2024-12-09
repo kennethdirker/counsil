@@ -54,3 +54,20 @@ class User(UserMixin, db.Model):
     @login.user_loader
     def load_user(id):
         return db.session.get(User, int(id))
+
+
+class Discussion(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    title: so.Mapped[str] = so.mapped_column(sa.String(256))
+
+
+# class Contribution(db.Model):
+#     id: so.Mapped[int] = so.mapped_column(primary_key=True)
+#     content: so.Mapped[str] = so.mapped_column(sa.Text)
+#     timestamp: so.Mapped[datetime] = so.mapped_column(
+#         index=True, default=lambda: datetime.now(timezone.utc)
+#     )
+#     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+#     discussion_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Discussion.id), index=True)
+#
+#     author: so.Mapped[User] = so.relationship(back_populates="posts")

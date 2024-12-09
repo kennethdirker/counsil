@@ -21,6 +21,8 @@ class User(UserMixin, db.Model):
         default=lambda: datetime.now(timezone.utc)
     )
 
+    posts: so.WriteOnlyMapped["Post"] = so.relationship(back_populates="author")
+
     def __repr__(self):
         return "<User {}>".format(self.username)
 
@@ -59,15 +61,21 @@ class User(UserMixin, db.Model):
 class Discussion(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     title: so.Mapped[str] = so.mapped_column(sa.String(256))
+    created_at: so.Mapped[datetime] = so.mapped_column(
+        index=True, default=lambda: datetime.now(timezone.utc)
+    )
+
+    posts: so.WriteOnlyMapped["Post"] = so.relationship(back_populates="topic")
 
 
-# class Contribution(db.Model):
-#     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-#     content: so.Mapped[str] = so.mapped_column(sa.Text)
-#     timestamp: so.Mapped[datetime] = so.mapped_column(
-#         index=True, default=lambda: datetime.now(timezone.utc)
-#     )
-#     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
-#     discussion_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Discussion.id), index=True)
-#
-#     author: so.Mapped[User] = so.relationship(back_populates="posts")
+class Post(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    body: so.Mapped[str] = so.mapped_column(sa.Text)
+    created_at: so.Mapped[datetime] = so.mapped_column(
+        index=True, default=lambda: datetime.now(timezone.utc)
+    )
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    discussion_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Discussion.id), index=True)
+
+    author: so.Mapped[User] = so.relationship(back_populates="posts")
+    topic: so.Mapped[Discussion] = so.relationship(back_populates="posts")

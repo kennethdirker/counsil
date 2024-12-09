@@ -32,3 +32,8 @@ class EmptyForm(FlaskForm):
 class NewDiscussionForm(FlaskForm):
     title = StringField(_l("Topic"), validators=[DataRequired(), Length(max=256)])
     submit = SubmitField("Create")
+
+
+class NewPostForm(FlaskForm):
+    body = TextAreaField(_("Your contribution"), validators=[DataRequired()])
+    submit = SubmitField("Post")

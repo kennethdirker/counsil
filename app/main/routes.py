@@ -4,8 +4,8 @@ from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 import sqlalchemy as sa
 from app import db
-from app.main.forms import EditProfileForm, EmptyForm, NewDiscussionForm
-from app.models import User, Discussion
+from app.main.forms import EditProfileForm, EmptyForm, NewDiscussionForm, NewPostForm
+from app.models import User, Discussion, Post
 from app.main import bp
 
 
@@ -75,4 +75,12 @@ def discussions_index():
 @login_required
 def discussions_view(id):
     discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == id))
-    return render_template("discussions/view.html", title=discussion.title, discussion=discussion)
+    form = NewPostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.body.data, user_id=current_user.id, discussion_id=discussion.id)
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for("main.discussions_view", id=discussion.id))
+    query = sa.select(Post).where(Post.discussion_id == discussion.id).order_by(Post.created_at.desc())
+    posts = db.session.scalars(query).all()
+    return render_template("discussions/view.html", title=discussion.title, discussion=discussion, form=form, posts=posts)

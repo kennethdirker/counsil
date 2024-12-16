@@ -67,6 +67,10 @@ class Discussion(db.Model):
 
     posts: so.WriteOnlyMapped["Post"] = so.relationship(back_populates="topic")
 
+    def last_post_id(self):
+        query = sa.select(sa.func.max(Post.id)).where(Post.discussion_id == self.id)
+        return db.session.scalar(query)
+
 
 class Post(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)

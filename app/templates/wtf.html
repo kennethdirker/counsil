@@ -77,10 +77,12 @@
 
 {% macro quick_form(form, action="", method="post", id="", novalidate=False) %}
 <form
-        {%- if action !=None %} action="{{ action }}" {% endif -%}
+        {%- if action !=None and not form.htmx %} action="{{ action }}" {% endif -%}
         {%- if method %} method="{{ method }}" {% endif %}
         {%- if id %} id="{{ id }}" {% endif -%}
-        {%- if novalidate %} novalidate{% endif -%}>
+        {%- if novalidate %} novalidate{% endif -%}
+        {%- if form.htmx %} hx-post="{{form.htmx}}" {% endif -%}
+>
     {{ form.hidden_tag() }}
 
     {%- for field, errors in form.errors.items() %}

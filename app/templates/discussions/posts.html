@@ -1,0 +1,7 @@
+<div hx-get="/discussions/{{discussion.id}}/posts/{{discussion.last_post_id()}}" hx-trigger="every 2s" hx-swap="outerHTML"></div>
+
+{% if posts %}
+    {% for post in posts %}
+        {% include("discussions/post.html") %}
+    {% endfor %}
+{% endif %}

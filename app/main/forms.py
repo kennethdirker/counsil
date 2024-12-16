@@ -37,3 +37,7 @@ class NewDiscussionForm(FlaskForm):
 class NewPostForm(FlaskForm):
     body = TextAreaField(_("Your contribution"), validators=[DataRequired()])
     submit = SubmitField("Post")
+
+    def __init__(self, discussion_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.htmx = f'/discussions/{discussion_id}/new'

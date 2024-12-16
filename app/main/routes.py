@@ -71,16 +71,39 @@ def discussions_index():
     return render_template("discussions/index.html", title=_("Discussions"), discussions=discussions, form=form)
 
 
-@bp.route("/discussions/<id>", methods=["GET", "POST"])
+@bp.route("/discussions/<id>")
 @login_required
 def discussions_view(id):
     discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == id))
-    form = NewPostForm()
+    form = NewPostForm(discussion_id=discussion.id)
+    query = sa.select(Post).where(Post.discussion_id == discussion.id).order_by(Post.id.desc())
+    posts = db.session.scalars(query).all()
+    return render_template("discussions/view.html", title=discussion.title, discussion=discussion, form=form,
+                           posts=posts, last_post_id=discussion.last_post_id())
+
+
+@bp.route("/discussions/<id>/posts/<last_post_id>")
+@login_required
+def discussions_view_posts(id, last_post_id):
+    discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == id))
+    query = (
+        sa.select(Post)
+        .where(Post.discussion_id == discussion.id)
+        .where(Post.id > last_post_id)
+        .order_by(Post.id.desc())
+    )
+    posts = db.session.scalars(query).all()
+    return render_template("discussions/posts.html", discussion=discussion, posts=posts)
+
+
+@bp.route("/discussions/<id>/new", methods=["POST"])
+@login_required
+def discussions_view_post(id):
+    discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == id))
+    form = NewPostForm(discussion_id=discussion.id)
     if form.validate_on_submit():
         post = Post(body=form.body.data, user_id=current_user.id, discussion_id=discussion.id)
         db.session.add(post)
         db.session.commit()
-        return redirect(url_for("main.discussions_view", id=discussion.id))
-    query = sa.select(Post).where(Post.discussion_id == discussion.id).order_by(Post.created_at.desc())
-    posts = db.session.scalars(query).all()
-    return render_template("discussions/view.html", title=discussion.title, discussion=discussion, form=form, posts=posts)
+        form.body.data = ''
+        return render_template("discussions/new.html", form=form)

@@ -72,6 +72,10 @@ class Discussion(db.Model):
         query = sa.select(sa.func.max(Post.id)).where(Post.discussion_id == self.id)
         return db.session.scalar(query)
 
+    def participants(self):
+        query = sa.select(User).distinct().join(Post, User.id == Post.user_id).where(Post.discussion_id == self.id)
+        return db.session.scalars(query).all()
+
 
 class Post(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)

@@ -31,7 +31,7 @@ def discussions_view(id):
     query = sa.select(Post).where(Post.discussion_id == discussion.id).order_by(Post.id.desc())
     posts = db.session.scalars(query).all()
     return render_template("discussions/view.html", title=discussion.title, discussion=discussion, form=form,
-                           posts=posts, last_post_id=discussion.last_post_id())
+                           posts=posts, last_post_id=discussion.last_post_id(), participants=discussion.participants())
 
 
 @bp.route("/discussions/<id>/posts/<last_post_id>")

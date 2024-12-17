@@ -1,10 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField
-from wtforms.validators import ValidationError, DataRequired, Length
-import sqlalchemy as sa
+from wtforms.validators import DataRequired, Length
 from flask_babel import _, lazy_gettext as _l
-from app import db
-from app.models import User
 
 
 class NewDiscussionForm(FlaskForm):
@@ -13,7 +10,7 @@ class NewDiscussionForm(FlaskForm):
 
 
 class NewPostForm(FlaskForm):
-    body = TextAreaField(_("Your contribution"), validators=[DataRequired()])
+    body = TextAreaField(_("Say something..."), validators=[DataRequired()])
     submit = SubmitField("Post")
 
     def __init__(self, discussion_id, *args, **kwargs):

@@ -27,11 +27,12 @@ def discussions_index():
 @login_required
 def discussions_view(id):
     discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == id))
+    users = db.session.scalars(sa.select(User).where(User.npc).order_by(User.username)).all()
     form = NewPostForm(discussion_id=discussion.id)
     query = sa.select(Post).where(Post.discussion_id == discussion.id).order_by(Post.id.desc())
     posts = db.session.scalars(query).all()
     return render_template("discussions/view.html", title=discussion.title, discussion=discussion, form=form,
-                           posts=posts, last_post_id=discussion.last_post_id(), participants=discussion.participants())
+                           posts=posts, users=users, assigned_user_ids = discussion.assigned_user_ids())
 
 
 @bp.route("/discussions/<id>/posts/<last_post_id>")
@@ -59,3 +60,21 @@ def discussions_view_post(id):
         db.session.commit()
         form.body.data = ''
         return render_template("discussions/new.html", form=form)
+
+
+@bp.route("/discussions/<discussion_id>/assign/<user_id>", methods=["POST"])
+@login_required
+def assign_user_to_discussion(discussion_id, user_id):
+    discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == discussion_id))
+    user = db.first_or_404(sa.select(User).where(User.id == user_id))
+    discussion.assign(user)
+    return render_template("discussions/_unassign.html", discussion=discussion, user=user)
+
+
+@bp.route("/discussions/<discussion_id>/unassign/<user_id>", methods=["POST"])
+@login_required
+def unassign_user_to_discussion(discussion_id, user_id):
+    discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == discussion_id))
+    user = db.first_or_404(sa.select(User).where(User.id == user_id))
+    discussion.unassign(user)
+    return render_template("discussions/_assign.html", discussion=discussion, user=user)

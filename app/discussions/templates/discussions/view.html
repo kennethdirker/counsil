@@ -1,13 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h2 class="text-2xl">{{_('Discussion')}}</h2>
 {{ theme.h1(discussion.title) }}
-<h2 class="text-xl">{{_('Discussion')}}</h2>
 
-<h3 class="font-bold">Participants</h3>
-{% for participant in participants %}
-<span class="p-1 border border-black rounded-sm shadow-sm shadow-black">{{participant.username}}</span>
+<h3 class="mt-2 text-lg">Participants</h3>
+{% for participant in discussion.participants() %}
+    <span class="p-1 border border-black rounded-sm shadow-sm shadow-black">{{participant.username}}</span>
 {% endfor %}
+
+<h3 class="mt-2 text-lg">NPCs</h3>
+{% for user in users %}
+    {% if user.id in assigned_user_ids %}
+        {% include("discussions/_unassign.html") %}
+    {% else %}
+        {% include("discussions/_assign.html") %}
+    {% endif %}
+{% endfor %}
+
+
 
 <div class="mt-4 border border-slate-600 rounded-md shadow-md shadow-slate-600 p-2 flex flex-col gap-2">
     {{ wtf.quick_form(form, method=None) }}
@@ -15,7 +26,7 @@
 
 <div class="grid grid-cols-[auto_1fr] gap-4 mt-4 gap-4">
 
-    <div hx-get="/discussions/{{discussion.id}}/posts/{{last_post_id}}" hx-trigger="every 2s" hx-swap="outerHTML"></div>
+    <div hx-get="/discussions/{{discussion.id}}/posts/{{discussion.last_post_id()}}" hx-trigger="every 2s" hx-swap="outerHTML"></div>
 
     {% if posts %}
         {% for post in posts %}

@@ -6,9 +6,17 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 from flask import current_app
 from flask_login import UserMixin
+from sqlalchemy.orm import backref
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import db, login
+
+assignees = sa.Table(
+    'assignees',
+    db.metadata,
+    sa.Column('discussion_id', sa.Integer, sa.ForeignKey('discussion.id'), primary_key=True),
+    sa.Column('user_id', sa.Integer, sa.ForeignKey('user.id'), primary_key=True)
+)
 
 
 class User(UserMixin, db.Model):
@@ -23,6 +31,10 @@ class User(UserMixin, db.Model):
     npc: so.Mapped[bool] = so.mapped_column(server_default=sa.sql.false())
 
     posts: so.WriteOnlyMapped["Post"] = so.relationship(back_populates="author")
+
+    assigned_discussions = db.relationship('Discussion', secondary=assignees, back_populates='assigned_users')
+
+
 
     def __repr__(self):
         return "<User {}>".format(self.username)
@@ -68,6 +80,8 @@ class Discussion(db.Model):
 
     posts: so.WriteOnlyMapped["Post"] = so.relationship(back_populates="topic")
 
+    assigned_users = db.relationship('User', secondary=assignees, back_populates='assigned_discussions')
+
     def last_post_id(self):
         query = sa.select(sa.func.max(Post.id)).where(Post.discussion_id == self.id)
         return db.session.scalar(query)
@@ -75,6 +89,22 @@ class Discussion(db.Model):
     def participants(self):
         query = sa.select(User).distinct().join(Post, User.id == Post.user_id).where(Post.discussion_id == self.id)
         return db.session.scalars(query).all()
+
+    def is_assigned(self, user):
+        return user in self.assigned_users
+
+    def assign(self, user):
+        if user.npc and not self.is_assigned(user):
+            self.assigned_users.append(user)
+            db.session.commit()
+
+    def unassign(self, user):
+        if self.is_assigned(user):
+            self.assigned_users.remove(user)
+            db.session.commit()
+
+    def assigned_user_ids(self):
+        return [user.id for user in self.assigned_users]
 
 
 class Post(db.Model):

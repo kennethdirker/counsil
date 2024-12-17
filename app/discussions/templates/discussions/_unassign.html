@@ -1,0 +1,16 @@
+<div id="npc-{{user.id}}"
+        class="p-1 border border-black rounded-sm shadow-sm shadow-black bg-blue-200 text-slate-600 inline-block">
+    <div class="flex flex-row items-center">
+        <span>{{user.username}}</span>
+        <span class="text-red-800 cursor-pointer hover:text-red-600"
+              hx-post="/discussions/{{discussion.id}}/unassign/{{user.id}}"
+              hx-target="#npc-{{user.id}}"
+              hx-swap="outerHTML">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            </svg>
+        </span>
+    </div>
+</div>

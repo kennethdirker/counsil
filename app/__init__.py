@@ -48,6 +48,10 @@ def create_app(config_class=Config):
 
     app.register_blueprint(profile_bp)
 
+    from app.discussions import bp as discussions_bp
+
+    app.register_blueprint(discussions_bp)
+
     from app.main import bp as main_bp
 
     app.register_blueprint(main_bp)

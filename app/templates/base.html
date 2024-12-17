@@ -68,7 +68,7 @@
                         <li>{{ theme.nav_link( _('Home'), url_for('main.index')) }}</li>
 
                         {% if not current_user.is_anonymous %}
-                        <li>{{ theme.nav_link( _('Discussions'), url_for('main.discussions_index')) }}</li>
+                        <li>{{ theme.nav_link( _('Discussions'), url_for('discussions.discussions_index')) }}</li>
                         {% endif %}
                     </ul>
 

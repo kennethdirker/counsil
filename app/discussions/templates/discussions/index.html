@@ -15,7 +15,7 @@
     <h2 class="text-lg">{{_('Join an ongoing discussion')}}</h2>
     <ul>
     {% for discussion in discussions %}
-    <li>{{ theme.link_link(discussion.title, url_for("main.discussions_view", id=discussion.id)) }}</li>
+    <li>{{ theme.link_link(discussion.title, url_for("discussions.discussions_view", id=discussion.id)) }}</li>
     {% endfor %}
     </ul>
 </div>

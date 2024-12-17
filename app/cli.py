@@ -1,6 +1,10 @@
+import json
 import os
 from flask import Blueprint
 import click
+
+from app.models import User
+from app import db
 
 bp = Blueprint("cli", __name__, cli_group=None)
 
@@ -37,3 +41,19 @@ def compile():
     """Compile all languages."""
     if os.system("pybabel compile -d app/translations"):
         raise RuntimeError("compile command failed")
+
+
+@bp.cli.command('seed-personas')
+def seed_personas():
+    with open('personas.json', 'r') as f:
+        data = json.load(f)
+    for member in data['council members']:
+        email = member['name'].replace(' ', '.').replace("'", '.') + '@the-council.gov'
+        user = User(
+            username=member['name'],
+            email=email,
+            npc=True,
+            about_me=str(member)
+        )
+        db.session.add(user)
+    db.session.commit()

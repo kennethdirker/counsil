@@ -20,6 +20,7 @@ class User(UserMixin, db.Model):
     last_seen: so.Mapped[Optional[datetime]] = so.mapped_column(
         default=lambda: datetime.now(timezone.utc)
     )
+    npc: so.Mapped[bool] = so.mapped_column(server_default=sa.sql.false())
 
     posts: so.WriteOnlyMapped["Post"] = so.relationship(back_populates="author")
 

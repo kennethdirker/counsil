@@ -1,10 +1,10 @@
 from datetime import datetime, timezone
-from flask import render_template, flash, redirect, url_for, request, g, current_app
+from flask import render_template, flash, redirect, url_for, g
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 import sqlalchemy as sa
 from app import db
-from app.main.forms import EditProfileForm, EmptyForm, NewDiscussionForm, NewPostForm
+from app.main.forms import NewDiscussionForm, NewPostForm
 from app.models import User, Discussion, Post
 from app.main import bp
 
@@ -25,34 +25,6 @@ def index():
         "index.html",
         title=_("Home")
     )
-
-
-@bp.route("/user/<username>")
-@login_required
-def user(username):
-    user = db.first_or_404(sa.select(User).where(User.username == username))
-    form = EmptyForm()
-    return render_template(
-        "user.html",
-        user=user,
-        form=form
-    )
-
-
-@bp.route("/edit_profile", methods=["GET", "POST"])
-@login_required
-def edit_profile():
-    form = EditProfileForm(current_user.username)
-    if form.validate_on_submit():
-        current_user.username = form.username.data
-        current_user.about_me = form.about_me.data
-        db.session.commit()
-        flash(_("Your changes have been saved."))
-        return redirect(url_for("main.edit_profile"))
-    elif request.method == "GET":
-        form.username.data = current_user.username
-        form.about_me.data = current_user.about_me
-    return render_template("edit_profile.html", title=_("Edit Profile"), form=form)
 
 
 @bp.route("/discussions", methods=["GET", "POST"])

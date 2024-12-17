@@ -19,7 +19,7 @@
 
         {% if user == current_user %}
         <p>
-            {{ theme.button_link( _('Edit Profile'), url_for('main.edit_profile')) }}
+            {{ theme.button_link( _('Edit Profile'), url_for('profile.edit_profile')) }}
         </p>
         {% endif %}
 

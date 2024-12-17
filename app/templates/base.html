@@ -76,7 +76,7 @@
                         {% if current_user.is_anonymous %}
                         <li>{{ theme.nav_link( _('Login'), url_for('auth.login')) }}</li>
                         {% else %}
-                        <li>{{ theme.nav_link( _('Profile'), url_for('main.user', username=current_user.username)) }}
+                        <li>{{ theme.nav_link( _('Profile'), url_for('profile.user', username=current_user.username)) }}
                         </li>
                         <li>{{ theme.nav_link( _('Logout'), url_for('auth.logout')) }}</li>
                         {% endif %}

@@ -1,8 +1,8 @@
 <div id="npc-{{user.id}}"
-        class="p-1 border border-black rounded-sm shadow-sm shadow-black bg-blue-200 text-slate-600 inline-block">
+        class="p-1 border border-black rounded-sm shadow-sm shadow-black bg-slate-600 text-gray-100 inline-block">
     <div class="flex flex-row items-center">
         <span>{{user.username}}</span>
-        <span class="text-red-800 cursor-pointer hover:text-red-600"
+        <span class="text-red-500 cursor-pointer hover:text-red-300"
               hx-post="/discussions/{{discussion.id}}/unassign/{{user.id}}"
               hx-target="#npc-{{user.id}}"
               hx-swap="outerHTML">

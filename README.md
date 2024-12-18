@@ -12,6 +12,7 @@ If you received a DB copy, you're done now. Otherwise, initialize the database:
 
 ```bash
 flask db upgrade
+flask seed-personas
 ```
 
 ## Start the application locally

@@ -7,3 +7,4 @@ node_modules
 /app.db
 /logs/*.log
 /env
+/agents/model_bin

@@ -1,8 +1,9 @@
 import argparse, os
 from pathlib import Path
 
+# External libs
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from transformers import AutoModelForCausalLM
 
 
 def main(model_id: str, save_name: str):

@@ -6,5 +6,5 @@ __pycache__
 node_modules
 /app.db
 /logs/*.log
-/env
+/agents/env
 /agents/model_bin

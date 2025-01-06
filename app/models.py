@@ -6,7 +6,6 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 from flask import current_app
 from flask_login import UserMixin
-from sqlalchemy.orm import backref
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import db, login
@@ -77,6 +76,8 @@ class Discussion(db.Model):
     created_at: so.Mapped[datetime] = so.mapped_column(
         index=True, default=lambda: datetime.now(timezone.utc)
     )
+    # SETUP, RUNNING, CONCLUDING
+    state: so.Mapped[str] = so.mapped_column(sa.String(256), server_default='SETUP')
 
     posts: so.WriteOnlyMapped["Post"] = so.relationship(back_populates="topic")
 
@@ -107,14 +108,19 @@ class Discussion(db.Model):
         return [user.id for user in self.assigned_users]
 
     def has_stalled(self):
-        query = (sa.select(sa.func.count(Post.id))
+        last_human_id = self.last_human_post_id()
+        if last_human_id is None:
+            last_human_id = 0
+        posts_since_query = (sa.select(sa.func.count(Post.id))
                  .where(Post.discussion_id == self.id)
-                 .where(Post.id > self.last_human_post_id()))
-        return db.session.scalar(query) > current_app.config["DISCUSSION_STALL_AFTER_NPC_POST_LIMIT"]
+                 .where(Post.id > last_human_id))
+        posts_since_count = db.session.scalar(posts_since_query)
+        return posts_since_count > current_app.config["DISCUSSION_STALL_AFTER_NPC_POST_LIMIT"]
 
     def last_human_post_id(self):
         query = sa.select(sa.func.max(Post.id)).where(Post.discussion_id == self.id).where(Post.is_npc == False)
-        return db.session.scalar(query)
+        last_id = db.session.scalar(query)
+        return last_id
 
 
 class Post(db.Model):

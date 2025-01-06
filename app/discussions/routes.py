@@ -29,7 +29,7 @@ def discussions_view(id):
     discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == id))
     users = db.session.scalars(sa.select(User).where(User.npc).order_by(User.username)).all()
     form = NewPostForm(discussion_id=discussion.id)
-    query = sa.select(Post).where(Post.discussion_id == discussion.id).order_by(Post.id.desc())
+    query = sa.select(Post).where(Post.discussion_id == discussion.id).order_by(Post.id.asc())
     posts = db.session.scalars(query).all()
     return render_template("discussions/view.html", title=discussion.title, discussion=discussion, form=form,
                            posts=posts, users=users, assigned_user_ids = discussion.assigned_user_ids())
@@ -43,9 +43,12 @@ def discussions_view_posts(id, last_post_id):
         sa.select(Post)
         .where(Post.discussion_id == discussion.id)
         .where(Post.id > last_post_id)
-        .order_by(Post.id.desc())
+        .order_by(Post.id.asc())
     )
     posts = db.session.scalars(query).all()
+    if not posts:
+        return None, 404
+
     return render_template("discussions/posts.html", discussion=discussion, posts=posts)
 
 

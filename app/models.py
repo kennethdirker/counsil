@@ -107,7 +107,9 @@ class Discussion(db.Model):
         return [user.id for user in self.assigned_users]
 
     def has_stalled(self):
-        query = sa.select(sa.func.count(Post.id)).where(Post.discussion_id == self.id).where(Post.id > self.last_post_id())
+        query = (sa.select(sa.func.count(Post.id))
+                 .where(Post.discussion_id == self.id)
+                 .where(Post.id > self.last_human_post_id()))
         return db.session.scalar(query) > current_app.config["DISCUSSION_STALL_AFTER_NPC_POST_LIMIT"]
 
     def last_human_post_id(self):

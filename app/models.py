@@ -106,6 +106,14 @@ class Discussion(db.Model):
     def assigned_user_ids(self):
         return [user.id for user in self.assigned_users]
 
+    def has_stalled(self):
+        query = sa.select(sa.func.count(Post.id)).where(Post.discussion_id == self.id).where(Post.id > self.last_post_id())
+        return db.session.scalar(query) > current_app.config["DISCUSSION_STALL_AFTER_NPC_POST_LIMIT"]
+
+    def last_human_post_id(self):
+        query = sa.select(sa.func.max(Post.id)).where(Post.discussion_id == self.id).where(Post.is_npc == False)
+        return db.session.scalar(query)
+
 
 class Post(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
@@ -115,6 +123,7 @@ class Post(db.Model):
     )
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
     discussion_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Discussion.id), index=True)
+    is_npc: so.Mapped[bool] = so.mapped_column(server_default=sa.sql.false())
 
     author: so.Mapped[User] = so.relationship(back_populates="posts")
     topic: so.Mapped[Discussion] = so.relationship(back_populates="posts")

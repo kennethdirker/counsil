@@ -58,7 +58,7 @@ def discussions_view_post(id):
     discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == id))
     form = NewPostForm(discussion_id=discussion.id)
     if form.validate_on_submit():
-        post = Post(body=form.body.data, user_id=current_user.id, discussion_id=discussion.id)
+        post = Post(body=form.body.data, user_id=current_user.id, discussion_id=discussion.id, is_npc=False)
         db.session.add(post)
         db.session.commit()
         form.body.data = ''

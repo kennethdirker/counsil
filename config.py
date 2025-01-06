@@ -19,6 +19,6 @@ class Config:
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     ADMINS = ["your-email@example.com"]
 
-    POSTS_PER_PAGE = 25
+    DISCUSSION_STALL_AFTER_NPC_POST_LIMIT = 8
 
     LANGUAGES = ["en", "nl"]

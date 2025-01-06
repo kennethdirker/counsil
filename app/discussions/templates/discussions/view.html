@@ -8,8 +8,8 @@
         <div class="flex flex-row items-center">
             <h2 class="text-lg flex-grow">{{discussion.title}}</h2>
             <button class="text-lg p-1 border border-slate-600 shadow-sm shadow-slate-600 hover:bg-slate-600 hover:text-yellow-200"
-                @click="open = !open">Participants
-        </button>
+                    @click="open = !open">Participants
+            </button>
         </div>
 
 
@@ -21,7 +21,7 @@
                 {% endfor %}
             </div>
 
-             <h4 class="font-bold">Add/Remove NPCs:</h4>
+            <h4 class="font-bold">Add/Remove NPCs:</h4>
             <div class="flex flex-row flex-wrap gap-2">
                 {% for user in users %}
                 {% if user.id in assigned_user_ids %}
@@ -43,7 +43,11 @@
         {% endif %}
 
         <div hx-get="/discussions/{{discussion.id}}/posts/{{discussion.last_post_id()}}" hx-trigger="every 2s"
-             hx-swap="outerHTML show:bottom"></div>
+             hx-swap="outerHTML show:bottom">
+            {% if discussion.has_stalled() %}
+            <!-- The discussion has stalled until another human posts.</p> -->
+            {% endif %}
+        </div>
 
     </div>
 

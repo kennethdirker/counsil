@@ -47,7 +47,7 @@ def discussions_view_posts(id, last_post_id):
     )
     posts = db.session.scalars(query).all()
     if not posts:
-        return None, 404
+        return '', 204
 
     return render_template("discussions/posts.html", discussion=discussion, posts=posts)
 

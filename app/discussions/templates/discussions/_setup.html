@@ -1,0 +1,42 @@
+<div class="flex flex-col gap-4">
+
+    <div>
+        <a href="{{url_for('discussions.finish_setup', discussion_id=discussion.id)}}"
+           class="shrink p-2 bg-yellow-200 border border-slate-600 shadow-sm shadow-black text-slate-600 font-bold">
+            I'm ready - Get the meeting started!
+        </a>
+    </div>
+
+    <p>Or do some more setup...</p>
+
+    <div>
+        <h4 class="font-bold">Add/Remove NPCs:</h4>
+        <div class="flex flex-row flex-wrap gap-2">
+            {% for user in users %}
+                {% if user.id in assigned_user_ids %}
+                    {% include("discussions/_unassign.html") %}
+                {% else %}
+                    {% include("discussions/_assign.html") %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <p>Get the discussion started by describing the matter before the council:</p>
+
+    {% if not posts %}
+    <div id="starting-points">
+        <h4 class="font-bold">Choose a sample topic (or post your own):</h4>
+        <div class="grid grid-cols-2 gap-2">
+            {% for key, topic in topics.items() %}
+            <a href="{{url_for('discussions.starting_point', discussion_id=discussion.id, key=key)}}"
+               class="border border-yellow-100 shadow-md shadow-yellow-100 text-sm p-1">
+                {{topic}}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+
+</div>

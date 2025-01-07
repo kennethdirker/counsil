@@ -3,45 +3,21 @@
 {% block content %}
 <div class="h-full flex flex-col gap-4">
     {{ theme.h1(_('Discussion')) }}
+    <h2 class="text-xl font-bold">Subject: {{discussion.title}} - {{discussion.state}}</h2>
 
-    <div x-data="{open: false}">
-        <div class="flex flex-row items-center">
-            <h2 class="text-lg flex-grow">{{discussion.title}}</h2>
-            <button class="text-lg p-1 border border-slate-600 shadow-sm shadow-slate-600 hover:bg-slate-600 hover:text-yellow-200"
-                    @click="open = !open">Participants
-            </button>
-        </div>
+    {% if discussion.state == 'SETUP' %}
+    {% include("discussions/_setup.html") %}
+    {% endif %}
 
 
-        <div x-cloak x-show="open" @click.outside="open = false" class="flex flex-col gap-2">
-            <h4 class="font-bold mt-2 mb-2">Contributions made by:</h4>
-            <div class="flex flex-row flex-wrap gap-2">
-                {% for participant in discussion.participants() %}
-                <span class="p-1 border border-black rounded-sm shadow-sm shadow-black">{{participant.username}}</span>
-                {% endfor %}
-            </div>
-
-            <h4 class="font-bold">Add/Remove NPCs:</h4>
-            <div class="flex flex-row flex-wrap gap-2">
-                {% for user in users %}
-                {% if user.id in assigned_user_ids %}
-                {% include("discussions/_unassign.html") %}
-                {% else %}
-                {% include("discussions/_assign.html") %}
-                {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-    </div>
 
     <div class="grow  overflow-y-scroll">
         <div class="grid grid-cols-[auto_1fr] gap-4" id="posts-container">
 
-
             {% if posts %}
-            {% for post in posts %}
-            {% include("discussions/post.html") %}
-            {% endfor %}
+                {% for post in posts %}
+                    {% include("discussions/post.html") %}
+                {% endfor %}
             {% endif %}
 
             <div hx-get="/discussions/{{discussion.id}}/posts/{{discussion.last_post_id()}}" hx-trigger="every 2s"
@@ -54,7 +30,13 @@
         </div>
     </div>
 
+    {% if discussion.state == 'RUNNING' %}
+        {% include("discussions/_running.html") %}
+    {% endif %}
+
     <div class="border border-slate-600 rounded-md shadow-md shadow-slate-600 p-2 flex flex-col gap-2">
+
+
         {{ wtf.quick_form(form, method=None) }}
     </div>
 </div>

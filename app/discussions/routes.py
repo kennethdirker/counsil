@@ -1,3 +1,5 @@
+from pydoc_data.topics import topics
+
 from flask import render_template, flash, redirect, url_for
 from flask_login import current_user, login_required
 from flask_babel import _
@@ -6,7 +8,7 @@ from app import db
 from app.discussions.forms import NewDiscussionForm, NewPostForm
 from app.models import User, Discussion, Post
 from app.discussions import bp
-
+from app.discussions.topics import TOPICS
 
 @bp.route("/discussions", methods=["GET", "POST"])
 @login_required
@@ -32,7 +34,7 @@ def discussions_view(id):
     query = sa.select(Post).where(Post.discussion_id == discussion.id).order_by(Post.id.asc())
     posts = db.session.scalars(query).all()
     return render_template("discussions/view.html", title=discussion.title, discussion=discussion, form=form,
-                           posts=posts, users=users, assigned_user_ids = discussion.assigned_user_ids())
+                           posts=posts, users=users, assigned_user_ids = discussion.assigned_user_ids(), topics=TOPICS)
 
 
 @bp.route("/discussions/<id>/posts/<last_post_id>")
@@ -81,3 +83,29 @@ def unassign_user_to_discussion(discussion_id, user_id):
     user = db.first_or_404(sa.select(User).where(User.id == user_id))
     discussion.unassign(user)
     return render_template("discussions/_assign.html", discussion=discussion, user=user)
+
+@bp.route("/discussions/<discussion_id>/finish_setup")
+@login_required
+def finish_setup(discussion_id):
+    discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == discussion_id))
+    if discussion.state in ['SETUP', 'RUNNING']:
+        discussion.state = 'RUNNING'
+        db.session.commit()
+    return redirect(url_for("discussions.discussions_view", id=discussion.id))
+
+@bp.route("/discussions/<discussion_id>/conclude")
+@login_required
+def conclude(discussion_id):
+    discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == discussion_id))
+    discussion.state = 'CONCLUDING'
+    db.session.commit()
+    return redirect(url_for("discussions.discussions_view", id=discussion.id))
+
+@bp.route("/discussions/<discussion_id>/starting_point/<key>")
+@login_required
+def starting_point(discussion_id, key):
+    discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == discussion_id))
+    post = Post(body=TOPICS[key], user_id=current_user.id, discussion_id=discussion.id, is_npc=False)
+    db.session.add(post)
+    db.session.commit()
+    return redirect(url_for("discussions.discussions_view", id=discussion.id))

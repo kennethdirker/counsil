@@ -3,7 +3,7 @@
     <div class="grid col-span-2 grid-cols-subgrid items-center">
         <a class="text-lg font-bold" href="{{ url_for('profile.user', username=post.author.username) }}">{{
             post.author.username }}</a>
-        <h4 class="text-sm italic">{{ moment(post.created_at).format('LLL') }}</h4>
+        <h4 class="text-sm italic">{{ post.created_at.strftime('%a %d %b %Y, %I:%M%p') }}</h4>
     </div>
 
     <div class="grid col-span-2 grid-cols-subgrid ">

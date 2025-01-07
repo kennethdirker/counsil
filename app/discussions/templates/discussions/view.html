@@ -34,21 +34,24 @@
         </div>
     </div>
 
-    <div class="grow grid grid-cols-[auto_1fr] gap-4 overflow-y-scroll">
+    <div class="grow  overflow-y-scroll">
+        <div class="grid grid-cols-[auto_1fr] gap-4" id="posts-container">
 
-        {% if posts %}
-        {% for post in posts %}
-        {% include("discussions/post.html") %}
-        {% endfor %}
-        {% endif %}
 
-        <div hx-get="/discussions/{{discussion.id}}/posts/{{discussion.last_post_id()}}" hx-trigger="every 2s"
-             hx-swap="outerHTML show:bottom">
-            {% if discussion.has_stalled() %}
-            <!-- The discussion has stalled until another human posts.</p> -->
+            {% if posts %}
+            {% for post in posts %}
+            {% include("discussions/post.html") %}
+            {% endfor %}
             {% endif %}
-        </div>
 
+            <div hx-get="/discussions/{{discussion.id}}/posts/{{discussion.last_post_id()}}" hx-trigger="every 2s"
+                 hx-swap="outerHTML show:bottom">
+                {% if discussion.has_stalled() %}
+                <!-- The discussion has stalled until another human posts.</p> -->
+                {% endif %}
+            </div>
+
+        </div>
     </div>
 
     <div class="border border-slate-600 rounded-md shadow-md shadow-slate-600 p-2 flex flex-col gap-2">

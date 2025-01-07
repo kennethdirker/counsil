@@ -5,6 +5,6 @@ Python virtual environment:
 	pip install -f requirements.txt
 
 Note:
-	CUDA and thus also torch versions are GPU dependent - installing requirements.txt is probably not enough to install the correct Python libraries.
+	Torch versions are GPU dependent - installing requirements.txt is probably not enough to install the correct Python libraries.
 Fix: CUDA/Torch versions
 	

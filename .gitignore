@@ -9,5 +9,5 @@ node_modules
 
 /backend/env
 /backend/api_keys.txt
-*/agent_workspace
+agent_workspace/
 /backend/agents/model_bin

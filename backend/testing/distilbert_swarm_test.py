@@ -7,8 +7,8 @@ from swarms import Agent as SwarmsAgent
 from transformers import pipeline, DistilBertForQuestionAnswering, DistilBertTokenizer
 
 
-# Counselor Agent
-class CounselAgent(SwarmsAgent):
+# Counselor Agent (DistilBert)
+class CounselorAgent(SwarmsAgent):
     """
     
     """
@@ -20,7 +20,7 @@ class CounselAgent(SwarmsAgent):
             *args, **kwargs
         ):
 
-        # # Initialize a pre-trained pipeline from local storage
+        # Initialize a pre-trained pipeline from local storage
         self.pipeline = pipeline(
             "question-answering", 
             model = model, 
@@ -42,7 +42,6 @@ class CounselAgent(SwarmsAgent):
             context = context,
             max_length = 100
         )["answer"]
-
 
 
 def init_counselors():
@@ -79,7 +78,7 @@ def init_agents(
         users: list[dict[str, str]],
         model: Any,
         tokenizer
-    ) -> list[CounselAgent]:
+    ) -> list[CounselorAgent]:
     """
     
     """
@@ -87,7 +86,7 @@ def init_agents(
     print("Loading agents...")
     agents = []
     for user in users:
-        agents.append(CounselAgent(
+        agents.append(CounselorAgent(
             user["name"],
             model,
             tokenizer,

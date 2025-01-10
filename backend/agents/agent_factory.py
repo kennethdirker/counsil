@@ -7,14 +7,13 @@ from transformers import DistilBertForQuestionAnswering, DistilBertTokenizer
 
 
 # Package imports
-from CounselorAgent import BertCounselorAgent as Counselor
-from SecretaryAgent import BertSecretaryAgent as Secretary
+from counselor_agent import BertCounselorAgent as Counselor
+from secretary_agent import BertSecretaryAgent as Secretary
 
 # DistilBert
 class AgentFactory:
     def __init__(
             self, 
-            model_path: Path, 
             setting: str,
             proposal: str,
             verbose: bool = False
@@ -30,7 +29,9 @@ class AgentFactory:
         self.proposal = proposal
 
         # Load model and tokenizer  
-        start = time.time()    
+        model_path = Path("model_bin")
+        model_path /= "TinyLlama-1.1B-Chat-v1.0"
+        start = time.time()
         if verbose:
             print(f"Loading model and tokenizer from {model_path}")
         self.model = DistilBertForQuestionAnswering.from_pretrained(model_path)

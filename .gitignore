@@ -8,6 +8,6 @@ node_modules
 /logs/*.log
 
 /backend/env
-/backend/api_keys.txt
+/backend/agents/api_keys.txt
 agent_workspace/
 /backend/agents/model_bin

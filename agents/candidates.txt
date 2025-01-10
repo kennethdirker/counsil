@@ -1,7 +1,0 @@
-Via API:
-    Mistral-large-latest
-
-Small local:
-X    teknium/OpenHermes-2-Mistral-7B        # Too big < Single agent doable?
-V    TinyLlama/TinyLlama-1.1B-Chat-v1.0     # Small enough
-X    microsoft/Phi-3-small-128k-instruct    # Too big < Single agent doable?

@@ -7,7 +7,7 @@ node_modules
 /app.db
 /logs/*.log
 
-/agents/env
-/agents/model_bin
-/agents/agent_workspace
-/agents/api_keys.txt
+/backend/env
+/backend/agents/api_keys.txt
+agent_workspace/
+/backend/agents/model_bin

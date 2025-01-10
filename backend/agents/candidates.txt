@@ -1,0 +1,8 @@
+Via API:
+    Mistral-large-latest
+    OpenAI
+
+Small local:
+V   distilbert/distilbert-base-uncased-distilled-squad <<<<
+X   teknium/OpenHermes-2-Mistral-7B        # Too big < Single agent doable?
+X   microsoft/Phi-3-small-128k-instruct    # Too big < Single agent doable?

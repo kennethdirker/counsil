@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timezone
 from hashlib import md5
 from time import time
@@ -72,6 +73,12 @@ class User(UserMixin, db.Model):
     def load_user(id):
         return db.session.get(User, int(id))
 
+
+    def structured(self):
+        try:
+            return json.loads(self.about_me)
+        except ValueError:
+            return None
 
 class Discussion(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)

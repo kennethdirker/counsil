@@ -1,6 +1,6 @@
 from design_by_committee import db, app
 import sqlalchemy as sa
-from app.models import Discussion
+from app.models import Discussion, User, Post
 
 
 def example():
@@ -13,4 +13,7 @@ def example():
 
 
 if __name__ == '__main__':
-    example()
+    # example()
+    with app.app_context():
+        user = db.first_or_404(sa.select(User).where(User.id == 3))
+        print(user.structured())

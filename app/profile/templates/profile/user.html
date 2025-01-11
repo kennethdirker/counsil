@@ -3,15 +3,75 @@
 {% block content %}
 <div class="flex flex-row gap-4">
     <div class="grow-0">
-        <img src="{{ user.avatar(256) }}">
+        <img src="{{ user.avatar(256) }}" width="256" height="256">
     </div>
 
     <div class="grow flex flex-col gap-2">
         {{ theme.h1(user.username) }}
 
-        {% if user.about_me %}
+        {% if member %}
+
+        <div class="flex flex-row gap-8">
+            <div class="mb-4">
+                <h2 class="text-xl font-semibold mb-2">About</h2>
+                <dl class="space-y-2">
+                    <div class="flex">
+                        <dt class="font-semibold mr-2">Age:</dt>
+                        <dd>{{ member['age'] }}</dd>
+                    </div>
+                    <div class="flex">
+                        <dt class="font-semibold mr-2">Lives in:</dt>
+                        <dd>{{ member['lives in'] }}</dd>
+                    </div>
+                    <div class="flex">
+                        <dt class="font-semibold mr-2">Occupation:</dt>
+                        <dd>{{ member.occupation }}</dd>
+                    </div>
+                    <div class="flex">
+                        <dt class="font-semibold mr-2">Main Mode of Transport:</dt>
+                        <dd>{{ member['main mode of transport'] }}</dd>
+                    </div>
+                    <div class="flex">
+                        <dt class="font-semibold mr-2">Preferred Mode of Transport:</dt>
+                        <dd>{{ member['preffered mode of transport'] }}</dd>
+                    </div>
+                    <div class="flex">
+                        <dt class="font-semibold mr-2">Has Kids:</dt>
+                        <dd>{{ member['has kids'] }}</dd>
+                    </div>
+                    <div class="flex">
+                        <dt class="font-semibold mr-2">Main Concern:</dt>
+                        <dd>{{ member['main concern'] }}</dd>
+                    </div>
+                </dl>
+            </div>
+
+
+            <div>
+                <div class="mb-4">
+                    <h2 class="text-xl font-semibold mb-2">Important Issues</h2>
+                    <ul class="list-disc list-inside">
+                        {% for issue in member['important issues'] %}
+                        <li>{{ issue }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="mb-4">
+                    <h2 class="text-xl font-semibold mb-2">Against</h2>
+                    <ul class="list-disc list-inside">
+                        {% for against in member['is against'] %}
+                        <li>{{ against }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        {% elif user.about_me %}
         <p class="italic">{{ user.about_me }}</p>
         {% endif %}
+
 
         {% if user.last_seen %}
         <p>{{ _('Last seen on') }}: {{ moment(user.last_seen).format('LLL') }}</p>

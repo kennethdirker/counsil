@@ -16,6 +16,7 @@ def user(username):
     return render_template(
         "profile/user.html",
         user=user,
+        member=user.structured(),
         form=form
     )
 

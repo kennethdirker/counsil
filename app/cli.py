@@ -53,7 +53,9 @@ def seed_personas():
             username=member['name'],
             email=email,
             npc=True,
-            about_me=str(member)
+            about_me=str(member),
+            avatar_image=member['avatar'] if 'avatar' in member else None
         )
+        user.set_password('NPC')
         db.session.add(user)
     db.session.commit()

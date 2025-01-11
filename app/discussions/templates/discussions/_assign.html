@@ -1,7 +1,10 @@
 <div id="npc-{{user.id}}"
      class="p-1 border border-black rounded-sm shadow-sm shadow-black bg-neutral-200 text-zinc-700 inline-block">
     <div class="flex flex-row items-center">
-        <span>{{user.username}}</span>
+        <a href="{{url_for('profile.user', username=user.username)}}" target="_blank"
+        class="underline hover:text-yellow-800">
+            {{user.username}}
+        </a>
         <span class="text-blue-600 cursor-pointer hover:text-blue-800"
               hx-post="/discussions/{{discussion.id}}/assign/{{user.id}}"
               hx-target="#npc-{{user.id}}"

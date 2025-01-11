@@ -4,7 +4,7 @@ from time import time
 from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-from flask import current_app
+from flask import current_app, url_for
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
@@ -28,6 +28,7 @@ class User(UserMixin, db.Model):
         default=lambda: datetime.now(timezone.utc)
     )
     npc: so.Mapped[bool] = so.mapped_column(server_default=sa.sql.false())
+    avatar_image: so.Mapped[str] = so.mapped_column(sa.String(120), nullable=True)
 
     posts: so.WriteOnlyMapped["Post"] = so.relationship(back_populates="author")
 
@@ -45,6 +46,8 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def avatar(self, size):
+        if self.avatar_image:
+            return url_for('static', filename='avatar/' + self.avatar_image)
         digest = md5(self.email.lower().encode("utf-8")).hexdigest()
         return f"https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}"
 

@@ -6,7 +6,7 @@
       "lives in": "City Center",
       "occupation": "small business owner",
       "main mode of transport": "car",
-      "preffered mode of transport": "car",
+      "preferred mode of transport": "car",
       "has kids": "yes",
       "main concern": "traffic flow",
       "important issues": [
@@ -32,7 +32,7 @@
       "lives in": "Suburbs",
       "occupation": "Veteran",
       "main mode of transport": "car",
-      "preffered mode of transport": "bike",
+      "preferred mode of transport": "bike",
       "has kids": "yes, but moved out",
       "main concern": "a better safer connection from the suburbs to downtown",
       "important issues": [
@@ -56,7 +56,7 @@
       "lives in": "East Side",
       "occupation": "Barista",
       "main mode of transport": "bike",
-      "preffered mode of transport": "bike",
+      "preferred mode of transport": "bike",
       "has kids": "no",
       "main concern": "support small business",
       "important issues": [
@@ -79,7 +79,7 @@
       "lives in": "Suburbs",
       "occupation": "Retired Carpenter",
       "main mode of transport": "car",
-      "preffered mode of transport": "public transport",
+      "preferred mode of transport": "public transport",
       "has kids": "yes, but moved out",
       "main concern": "traffic flow",
       "important issues": [
@@ -93,7 +93,7 @@
       "is against": [
         "big stores",
         "tourism",
-        "companies poluting the lakes"
+        "companies polluting the lakes"
       ],
       "avatar": "AarvonVanburen.jpeg"
     },
@@ -103,14 +103,14 @@
       "lives in": "Suburbs",
       "occupation": "student",
       "main mode of transport": "car",
-      "preffered mode of transport": "bike",
+      "preferred mode of transport": "bike",
       "has kids": "no",
       "main concern": "the enviroment",
       "important issues": [
         "lower traffic speed",
         "ban cars in the city center",
         "more public parks",
-        "better publuc WiFi",
+        "better public WiFi",
         "bike priority roads",
         "sustainable living initiatives"
       ],
@@ -120,7 +120,8 @@
         "industry",
         "the baby boomer generation",
         "large commercial developments"
-      ]
+      ],
+      "avatar": "XanderLewis.jpeg"
     },
     {
       "name": "Tiffany Hoff",
@@ -128,13 +129,13 @@
       "lives in": "Center",
       "occupation": "Lawyer",
       "main mode of transport": "bike",
-      "preffered mode of transport": "car",
+      "preferred mode of transport": "car",
       "has kids": "no",
       "main concern": "more room for the car",
       "important issues": [
         "more underground parking spaces",
         "better traffic flow in the center",
-        "more student accomidation",
+        "more student accommodation",
         "bigger parks",
         "unprotected bike paths"
       ],
@@ -143,7 +144,8 @@
         "restoring old buildings",
         "industry downtown",
         "privatizing public services"
-      ]
+      ],
+      "avatar": "TiffanyHoff.jpeg"
     },
     {
       "name": "Jonathan Green",
@@ -165,7 +167,8 @@
         "demolition of old buildings",
         "new highways through residential areas",
         "large commercial developments"
-      ]
+      ],
+      "avatar": "JonathanGreen.jpeg"
     },
     {
       "name": "Laura Miller",
@@ -187,7 +190,8 @@
         "reducing bike lanes",
         "limiting tech company expansions",
         "new car parking structures"
-      ]
+      ],
+      "avatar": "LauraMiller.jpeg"
     },
     {
       "name": "Carlos Rivera",
@@ -209,7 +213,8 @@
         "cutting education budgets",
         "privatizing public services",
         "expensive housing developments"
-      ]
+      ],
+      "avatar": "CarlosRivera.jpeg"
     },
     {
       "name": "Megan O'Connor",
@@ -231,7 +236,8 @@
         "luxury housing developments",
         "high rental prices",
         "car-centric infrastructure"
-      ]
+      ],
+      "avatar": "MeganOConnor.jpeg"
     },
     {
       "name": "Samir Patel",
@@ -253,7 +259,8 @@
         "cutting healthcare budgets",
         "unsafe public areas",
         "lack of emergency services"
-      ]
+      ],
+      "avatar": "SamirPatel.jpeg"
     },
     {
       "name": "Rebecca Miller",
@@ -275,7 +282,8 @@
         "cutting healthcare budgets",
         "unsafe pedestrian crossings",
         "increasing bike lanes at the expense of car lanes"
-      ]
+      ],
+      "avatar": "RebeccaMiller.jpeg"
     },
     {
       "name": "Daniel Baker",
@@ -297,7 +305,8 @@
         "reduced car lanes",
         "new bike paths replacing car lanes",
         "restrictive zoning laws"
-      ]
+      ],
+      "avatar": "DanielBaker.jpeg"
     },
     {
       "name": "Linda Johnson",
@@ -320,7 +329,8 @@
         "high property taxes",
         "bike lanes in residential areas",
         "tourism"
-      ]
+      ],
+      "avatar": "LindaJohnson.jpeg"
     },
     {
       "name": "Tommy Nguyen",
@@ -341,7 +351,8 @@
         "high car emissions",
         "reducing public transport",
         "more above ground parking"
-      ]
+      ],
+      "avatar": "TommyNguyen.jpeg"
     },
     {
       "name": "Grace Wilson",
@@ -363,7 +374,8 @@
         "demolition of historical sites",
         "large commercial developments",
         "less public transport"
-      ]
+      ],
+      "avatar": "GraceWilson.jpeg"
     }
   ]
 }

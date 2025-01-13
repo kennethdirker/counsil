@@ -5,7 +5,9 @@ import sqlalchemy as sa
 from app.models import Discussion, User, Post
 
 
-def contribute_to(discussion: Discussion, recent_posts):
+def contribute_to(discussion: Discussion, member: User):
+    recent_posts = discussion.get_posts_since_last_contribution(user_id=member.id,
+                                                                discussion_id=discussion.id)
     return "placeholder"
 
 
@@ -14,12 +16,12 @@ def progress(discussion: Discussion):
         time.sleep(1)
         if discussion.has_stalled():
             break
-        recent_posts = discussion.get_posts_since_last_contribution(user_id=member.id,
-                                                                    discussion_id=discussion.id)
-        contribution = contribute_to(discussion, recent_posts)
-        post = Post(body=contribution, user_id=member.id, discussion_id=discussion.id, is_npc=True)
-        db.session.add(post)
-        db.session.commit()
+
+        contribution = contribute_to(discussion, member)
+        if contribution:
+            post = Post(body=contribution, user_id=member.id, discussion_id=discussion.id, is_npc=True)
+            db.session.add(post)
+            db.session.commit()
 
 
 def conclude(discussion: Discussion):

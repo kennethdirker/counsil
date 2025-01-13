@@ -6,7 +6,10 @@
     {% for user in users %}
     <div class="flex">
         <a class="shadow-md shadow-slate-600 p-2" href="{{url_for('profile.user', username=user.username)}}">
-            <img src="{{ user.avatar(150) }}" width="150" height="150"/>
+            <div class="relative w-32 h-32">
+                <img src="{{ user.avatar(150) }}" class="w-full h-full object-cover"/>
+                <div class="absolute inset-0 border-8 border-neutral-200"></div>
+            </div>
             <h3>{{user.username}}</h3>
         </a>
     </div>

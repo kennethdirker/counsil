@@ -35,8 +35,6 @@ class User(UserMixin, db.Model):
 
     assigned_discussions = db.relationship('Discussion', secondary=assignees, back_populates='assigned_users')
 
-
-
     def __repr__(self):
         return "<User {}>".format(self.username)
 
@@ -73,12 +71,12 @@ class User(UserMixin, db.Model):
     def load_user(id):
         return db.session.get(User, int(id))
 
-
     def structured(self):
         try:
             return json.loads(self.about_me)
         except ValueError:
             return None
+
 
 class Discussion(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
@@ -123,8 +121,8 @@ class Discussion(db.Model):
     def has_stalled(self):
         last_human_id = self.last_human_post_id()
         posts_since_query = (sa.select(sa.func.count(Post.id))
-                 .where(Post.discussion_id == self.id)
-                 .where(Post.id > last_human_id))
+                             .where(Post.discussion_id == self.id)
+                             .where(Post.id > last_human_id))
         posts_since_count = db.session.scalar(posts_since_query)
         return posts_since_count > current_app.config["DISCUSSION_STALL_AFTER_NPC_POST_LIMIT"]
 
@@ -134,6 +132,18 @@ class Discussion(db.Model):
         if last_id is None:
             last_id = 0
         return last_id
+
+    def get_posts_since_last_contribution(self, user_id, discussion_id):
+        last_post_id = db.session.scalar(sa.select(sa.func.max(Post.id))
+                                         .where(Post.discussion_id == self.id)
+                                         .where(Post.user_id == user_id)
+                                         )
+        if last_post_id is None:
+            last_post_id = 0
+        posts_since_query = (sa.select(sa.func.count(Post.id))
+                             .where(Post.discussion_id == self.id)
+                             .where(Post.id > last_post_id))
+        return db.session.scalars(posts_since_query).all()
 
 
 class Post(db.Model):

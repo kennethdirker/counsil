@@ -133,7 +133,7 @@ class Discussion(db.Model):
             last_id = 0
         return last_id
 
-    def get_posts_since_last_contribution(self, user_id, discussion_id):
+    def get_posts_since_last_contribution(self, user_id):
         last_post_id = db.session.scalar(sa.select(sa.func.max(Post.id))
                                          .where(Post.discussion_id == self.id)
                                          .where(Post.user_id == user_id)

@@ -20,38 +20,18 @@ class AgentClient:
         """
         self.init_counselor_model()
         self.init_secretary_model()
-        # self.setting = setting
-        # self.proposal = proposal
-
-        # Load model and tokenizer  
-        # model_path = Path("model_bin")
-        # model_path /= "TinyLlama-1.1B-Chat-v1.0"
-        # start = time.time()
-        # if verbose:
-        #     print(f"Loading model and tokenizer from {model_path}")
-        # self.model = DistilBertForQuestionAnswering.from_pretrained(model_path)
-        # self.tokenizer = DistilBertTokenizer.from_pretrained(model_path)
-        # if verbose:
-        #     print(f"Model and tokenizer loaded in {time.time() - start:.2f} seconds.")
         
     
     def init_secretary_model(self):
-        # model_path = Path("model_bin")
-        # model_path /= "text_summarization"
-        self.secretary = pipeline("summarization", model="Falconsai/text_summarization")
+        self.secretary = pipeline("summarization", model="Falconsai/text_summarization", max_length=100)
 
 
     def init_counselor_model(self):
-        # model_path = Path("model_bin")
-        # model_path /= "TinyLlama-1.1B-Chat-v1.0"
-        # model = DistilBertForQuestionAnswering.from_pretrained(model_path)
-        # tokenizer = DistilBertTokenizer.from_pretrained(model_path)
-        # self.counselor = pipeline("text-generation", model=model, tokenizer=tokenizer)
-        self.counselor = pipeline("text2text-generation")
+        self.counselor = pipeline("text-generation", model="TinyLlama/TinyLlama-1.1B-Chat-v1.0")
 
     
     def summarize(self, text: str):
-        return self.secretary(text)[0]["generated_text"]
+        return self.secretary(text)[0]["summary_text"]
     
 
     def form_opinion(self,
@@ -59,9 +39,20 @@ class AgentClient:
             proposal: str,
             personality: str
         ) -> str:
-        context = "" #TODO setting + proposal + personality
-        output = self.counselor(context)
-        return output[0]["generated_text"]
+        messages = [
+            {
+                "role": "system",
+                "content": f"{personality} {setting}",
+            },
+            {
+                "role": "user", "content": f"Give your opinion about {proposal}."
+            },
+        ]
+        prompt = self.counselor.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        outputs = self.counselor(prompt, max_new_tokens=256, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
+        outputs = outputs[0]["generated_text"]
+        opinion = str(outputs).split("<|assistant|>")[-1]
+        return opinion
     
 
     def adjust_opinion(
@@ -72,9 +63,19 @@ class AgentClient:
             opinion: str,
             external: str
         ) -> str:
-        context = "" #TODO setting + proposal + personaliry + agent opinion + external opinions
-        output = self.counselor(context)
-        return output[0]["generated_text"]
+        messages = [
+            {
+                "role": "system",
+                "content": f"{personality} {setting} You are discussing about {proposal} and you opinion about the proposal is as follows: {opinion}",
+            },
+            {
+                "role": "user", "content": f"Adjust your opinion, which is '{opinion}' based on your personality, considering new arguments, which are as follows: {external}"
+            },
+        ]
+        prompt = self.counselor.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        outputs = self.counselor(prompt, max_new_tokens=256, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
+        # print(outputs[0]["generated_text"])
+        return outputs[0]["generated_text"]
     
 
     def vote(
@@ -83,26 +84,47 @@ class AgentClient:
             proposal: str,
             opinion: str,
         ) -> bool:
-        # context = "" #TODO setting + proposal + opinion
-        question = f"Answer whether to vote in or reject the proposal '{proposal}' in the setting '{setting}' based on the opinion {opinion}. Answer with yes or no."   #TODO
-        output = self.counselor(question)
-        if "yes" in output:
-            return True
-        return False
+        messages = [
+            {
+                "role": "system",
+                "content": f"{personality} {setting}. You are voting about {proposal}. You opinion about this is {opinion}",
+            },
+            {
+                "role": "user", "content": f"Would you pass or reject {proposal}? Answer with yes or no."
+            },
+            {
+                "role": "assistant",
+                "content": opinion
+            }
+        ]
+        prompt = self.counselor.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        outputs = self.counselor(prompt, max_new_tokens=10, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
+        answer = outputs[0]["generated_text"]
+        print(answer)
+        return "yes" in answer
 
+# client = AgentClient()
+# setting = "You live in a beautiful and thriving city. There is lots of greenery, the people are happy."\
+#           "Most people use public transit to move around. You are in a council meeting to discuss and vote about a proposal."
+          
+# proposal = "leveling the entire city to build a parking lot"
+# personality1 = "Your name is Sophia, a 27 year old woman who doesn't own a car. You hate parking lots and want more greenery, like parks, in the city."
+# personality2 = "Your name is Marley, a 27 year old man who owns a car. You hate nature and everything about plants and want more space to park your car in the city."
+# external = "A recent study has shown that building large parking lots is actually great for the environment. Trees can perfectly grow on them. Furthermore, people actually love watching nature while parked on a parking lot!"
+# answers = []
+# for personality in [personality1, personality2]:
+#     answers.append(client.form_opinion(setting, proposal, personality))
+# print(answers, "\n")
+# summary = client.summarize(answers[0] + answers[1])
+# print(summary)
 
-client = AgentClient()
-setting =     "Good evening everyone, thank you for attending tonight's council meeting. "\
-               "Our primary agenda item is the zoning of the proposed parking lot on Maple Street. "\
-               "As our community grows, so does the need for accessible parking. "\
-               "However, it's crucial to balance convenience with environmental impact and neighborhood character. "\
-               "Tonight, we'll hear from urban planners, local residents, and business owners to ensure all voices are considered. "\
-               "Our goal is to reach a decision that benefits our community as a whole. "\
-               "Let's begin by reviewing the proposed zoning changes."
-proposal = "We want to level the whole city and build one giant parking lot."
-personality = "My name is Sophia, 47 years old. I don't own a car."
-
-
+# print(opinion)
+# vote = client.vote(setting, proposal, opinion)
+# print(vote)
+# opinion = client.adjust_opinion(setting, proposal, personality, opinion, external)
+# print(opinion)
+# vote = client.vote(setting, proposal, opinion)
+# print(vote)
 
 
     # def create_counselor(self,

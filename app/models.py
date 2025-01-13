@@ -84,7 +84,7 @@ class Discussion(db.Model):
     created_at: so.Mapped[datetime] = so.mapped_column(
         index=True, default=lambda: datetime.now(timezone.utc)
     )
-    # SETUP, RUNNING, CONCLUDING
+    # SETUP, INITIALIZING, RUNNING, CONCLUDING
     state: so.Mapped[str] = so.mapped_column(sa.String(256), server_default='SETUP')
 
     posts: so.WriteOnlyMapped["Post"] = so.relationship(back_populates="topic")

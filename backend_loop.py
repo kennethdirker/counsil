@@ -1,12 +1,12 @@
-import time
 import random
 
 from design_by_committee import db, app
 import sqlalchemy as sa
 from app.models import Discussion, User, Post
+from npc import NPC
 
 
-def contribute_to(discussion: Discussion, member: User):
+def contribute_to(discussion: Discussion, member: User, npc: NPC):
     recent_posts = discussion.get_posts_since_last_contribution(user_id=member.id)
     return "placeholder"
 
@@ -41,12 +41,12 @@ def roulette_wheel_selection(members, discussion):
     return chosen_member
 
 
-def progress(discussion: Discussion):
+def progress(discussion: Discussion, room):
     if discussion.has_stalled():
         return
 
     member = roulette_wheel_selection(discussion.assigned_users, discussion)
-    contribution = contribute_to(discussion, member)
+    contribution = contribute_to(discussion, member, room[member.id])
     if contribution:
         post = Post(body=contribution, user_id=member.id, discussion_id=discussion.id, is_npc=True)
         db.session.add(post)
@@ -58,6 +58,7 @@ def conclude(discussion: Discussion):
 
 
 def main():
+    rooms = {}
     while True:
         query = sa.select(Discussion)
         discussions = db.session.scalars(query).all()
@@ -66,8 +67,12 @@ def main():
                 continue
             if discussion.has_stalled():
                 continue
+            if discussion.state == 'INITIALIZING':
+                rooms[discussion.id] = {member.id: NPC(member, discussion) for member in discussion.assigned_users}
+                discussion.state = 'RUNNING'
+                db.session.commit()
             if discussion.state == 'RUNNING':
-                progress(discussion)
+                progress(discussion, rooms[discussion.id])
             if discussion.state == 'CONCLUDING':
                 conclude(discussion)
 

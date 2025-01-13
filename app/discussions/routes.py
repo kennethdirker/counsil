@@ -88,8 +88,8 @@ def unassign_user_to_discussion(discussion_id, user_id):
 @login_required
 def finish_setup(discussion_id):
     discussion = db.first_or_404(sa.select(Discussion).where(Discussion.id == discussion_id))
-    if discussion.state in ['SETUP', 'RUNNING']:
-        discussion.state = 'RUNNING'
+    if discussion.state in ['SETUP', 'INITIALIZING']:
+        discussion.state = 'INITIALIZING'
         db.session.commit()
     return redirect(url_for("discussions.discussions_view", id=discussion.id))
 

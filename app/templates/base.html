@@ -68,6 +68,8 @@
                     {% if not current_user.is_anonymous %}
                     <li>{{ theme.nav_link( _('Discussions'), url_for('discussions.discussions_index')) }}</li>
                     {% endif %}
+
+                    <li>{{ theme.nav_link( _('Members'), url_for('profile.users_index')) }}</li>
                 </ul>
 
                 <ul>

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="grid grid-cols-4 gap-4">
+    {% for user in users %}
+    <div class="flex">
+        <a class="shadow-md shadow-slate-600 p-2" href="{{url_for('profile.user', username=user.username)}}">
+            <img src="{{ user.avatar(150) }}" width="150" height="150"/>
+            <h3>{{user.username}}</h3>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}

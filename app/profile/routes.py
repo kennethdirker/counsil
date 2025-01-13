@@ -8,6 +8,12 @@ from app.models import User
 from app.profile import bp
 
 
+@bp.route("/members")
+def users_index():
+    users = db.session.scalars(sa.select(User).where(User.npc).order_by(User.username)).all()
+    return render_template("profile/index.html", users=users)
+
+
 @bp.route("/user/<username>")
 @login_required
 def user(username):

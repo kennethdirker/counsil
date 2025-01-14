@@ -45,15 +45,27 @@ def progress(discussion: Discussion, room):
     if discussion.has_stalled():
         return
 
+    text = ""
+    for npc in discussion.assigned_users:
+        text += opinions[discussion][npc.id]
+        pass
+    summary = client.summarize(text)
+
     member = roulette_wheel_selection(discussion.assigned_users, discussion)
     contribution = contribute_to(discussion, member, room[member.id])
     if contribution:
+        opinions[discussion][member] = contribution
         post = Post(body=contribution, user_id=member.id, discussion_id=discussion.id, is_npc=True)
         db.session.add(post)
         db.session.commit()
 
 
-def conclude(discussion: Discussion):
+def conclude(discussion: Discussion, client: AgentClient):
+    # votes = [client.vote(...) for member in members]
+    # if votes.count(True) > len(votes) / 2:
+        # print("Proposal is passed!")
+    # else: 
+        # print("Proposal is rejected!")
     pass
 
 
@@ -74,7 +86,7 @@ def main():
             if discussion.state == 'RUNNING':
                 progress(discussion, rooms[discussion.id])
             if discussion.state == 'CONCLUDING':
-                conclude(discussion)
+                conclude(discussion, client)
 
 
 if __name__ == '__main__':

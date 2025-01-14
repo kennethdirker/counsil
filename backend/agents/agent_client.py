@@ -83,6 +83,7 @@ class AgentClient:
             setting: str,
             proposal: str,
             opinion: str,
+            personality: str
         ) -> bool:
         messages = [
             {
@@ -90,33 +91,29 @@ class AgentClient:
                 "content": f"{personality} {setting}. You are voting about {proposal}. You opinion about this is {opinion}",
             },
             {
-                "role": "user", "content": f"Would you pass or reject {proposal}? Answer with yes or no."
+                "role": "user", "content": f"Are you for or against {proposal}?"
             },
-            {
-                "role": "assistant",
-                "content": opinion
-            }
         ]
         prompt = self.counselor.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         outputs = self.counselor(prompt, max_new_tokens=10, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
         answer = outputs[0]["generated_text"]
         print(answer)
-        return "yes" in answer
+        return "against" not in answer
 
-# client = AgentClient()
-# setting = "You live in a beautiful and thriving city. There is lots of greenery, the people are happy."\
-#           "Most people use public transit to move around. You are in a council meeting to discuss and vote about a proposal."
+client = AgentClient()
+setting = "You live in a beautiful and thriving city. There is lots of greenery, the people are happy."\
+          "Most people use public transit to move around. You are in a council meeting to discuss and vote about a proposal."
           
-# proposal = "leveling the entire city to build a parking lot"
-# personality1 = "Your name is Sophia, a 27 year old woman who doesn't own a car. You hate parking lots and want more greenery, like parks, in the city."
-# personality2 = "Your name is Marley, a 27 year old man who owns a car. You hate nature and everything about plants and want more space to park your car in the city."
-# external = "A recent study has shown that building large parking lots is actually great for the environment. Trees can perfectly grow on them. Furthermore, people actually love watching nature while parked on a parking lot!"
-# answers = []
-# for personality in [personality1, personality2]:
-#     answers.append(client.form_opinion(setting, proposal, personality))
-# print(answers, "\n")
-# summary = client.summarize(answers[0] + answers[1])
-# print(summary)
+proposal = "leveling the entire city to build a parking lot"
+personality1 = "Your name is Sophia, a 27 year old woman who doesn't own a car. You hate parking lots and want more greenery, like parks, in the city."
+personality2 = "Your name is Marley, a 27 year old man who owns a car. You hate nature and everything about plants and want more space to park your car in the city."
+external = "A recent study has shown that building large parking lots is actually great for the environment. Trees can perfectly grow on them. Furthermore, people actually love watching nature while parked on a parking lot!"
+answers = []
+for personality in [personality1, personality2]:
+    answers.append(client.form_opinion(setting, proposal, personality))
+print(answers, "\n")
+summary = client.summarize(answers[0] + answers[1])
+print(summary)
 
 # print(opinion)
 # vote = client.vote(setting, proposal, opinion)

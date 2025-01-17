@@ -1,9 +1,11 @@
-import random
+import random, time
 
 from design_by_committee import db, app
 import sqlalchemy as sa
 from app.models import Discussion, User, Post
 from npc import NPC
+
+# from backend.agent_client import AgentCLient
 
 
 def contribute_to(discussion: Discussion, member: User, npc: NPC):
@@ -56,10 +58,28 @@ def progress(discussion: Discussion, room):
 def conclude(discussion: Discussion):
     pass
 
+class NoneType:
+    pass
 
 def main():
+    # Initialize chatroom dictionary to account for already existing chats
+    print("Initializing chatrooms")
     rooms = {}
+    query = sa.select(Discussion)
+    discussions = db.session.scalars(query).all()
+    for discussion in discussions:
+        STATE_OPTIONS = ["INITIALIZING", "RUNNING", "CONCLUDING"]
+        if discussion.state in STATE_OPTIONS:
+            rooms[discussion.id] = {member.id: NPC(member, discussion) for member in discussion.assigned_users}
+
+    print("Initializing agent client")
+    # client = AgentCLient()
+    client = NoneType()
+
+    # Main loop
+    print("Running discussions...")
     while True:
+        # time.sleep(1)
         query = sa.select(Discussion)
         discussions = db.session.scalars(query).all()
         for discussion in discussions:
@@ -68,7 +88,6 @@ def main():
             if discussion.has_stalled():
                 continue
             if discussion.state == 'INITIALIZING':
-                rooms[discussion.id] = {member.id: NPC(member, discussion) for member in discussion.assigned_users}
                 discussion.state = 'RUNNING'
                 db.session.commit()
             if discussion.state == 'RUNNING':

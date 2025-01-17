@@ -30,6 +30,7 @@ def eagerness_to_contribute(member, discussion):
 
 
 def roulette_wheel_selection(members, discussion):
+    """ Select which discussion member will (re)consider their viewpoint. """
     # Step 1: Compute eagerness for each panel member
     eagerness_values = [eagerness_to_contribute(member, discussion) for member in members]
 
@@ -43,7 +44,8 @@ def roulette_wheel_selection(members, discussion):
     return chosen_member
 
 
-def progress(discussion: Discussion, room):
+def progress(discussion: Discussion, room, client):
+    # Check if NPCs are waiting for the human user to talk
     if discussion.has_stalled():
         return
 
@@ -88,10 +90,11 @@ def main():
             if discussion.has_stalled():
                 continue
             if discussion.state == 'INITIALIZING':
+                rooms[discussion.id] = {member.id: NPC(member, discussion) for member in discussion.assigned_users}
                 discussion.state = 'RUNNING'
                 db.session.commit()
             if discussion.state == 'RUNNING':
-                progress(discussion, rooms[discussion.id])
+                progress(discussion, rooms[discussion.id], client)
             if discussion.state == 'CONCLUDING':
                 conclude(discussion)
 

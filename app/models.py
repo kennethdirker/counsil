@@ -140,10 +140,21 @@ class Discussion(db.Model):
                                          )
         if last_post_id is None:
             last_post_id = 0
-        posts_since_query = (sa.select(sa.func.count(Post.id))
+        count_posts_since_query = (sa.select(sa.func.count(Post.id))
                              .where(Post.discussion_id == self.id)
                              .where(Post.id > last_post_id))
-        return db.session.scalars(posts_since_query).all()
+        amount = db.session.scalars(count_posts_since_query).all()[0]
+        posts_since_query =(
+            sa.select(Post).where(Post.discussion_id == self.id)
+                           .order_by(Post.created_at)
+        )
+        return db.session.scalars(posts_since_query).all()[-amount:]
+    
+    
+    def get_subject(self) -> str:
+        """ Get the subject of the discussion, which is located in the first post. """
+        query = sa.select(Post.body).where(Post.discussion_id == self.id).order_by(Post.created_at)
+        return db.session.scalar(query)
 
 
 class Post(db.Model):

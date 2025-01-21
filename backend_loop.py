@@ -114,9 +114,9 @@ def main():
                 progress(discussion, rooms[discussion.id], client)
                 # All points have been made: Vote and finalize
             if discussion.state == 'CONCLUDING':
-                conclude(discussion, rooms[discussion.id])
+                conclude(rooms[discussion.id])
                 discussion.state = 'FINISHED'
-                db.sesseion.commit()
+                db.session.commit()
 
 
 if __name__ == '__main__':

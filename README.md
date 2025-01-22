@@ -15,10 +15,17 @@ flask db upgrade
 flask seed-personas
 ```
 
-## Start the application locally
+## Start the frontend application locally
 
 ```bash
 flask run
+```
+
+The frontend can be reached at localhost:5000
+
+## Start the backend application locally
+``` bash
+python backend_loop.py
 ```
 
 ## Credits

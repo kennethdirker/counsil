@@ -65,7 +65,6 @@ def progress(discussion: Discussion, room, client):
 
 
 def conclude(room: dict):
-# def conclude(discussion: Discussion, room,):
     """"""
     # Calculate the majority vote
     print("Voting...")

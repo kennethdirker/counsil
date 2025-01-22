@@ -1,18 +1,11 @@
 # Standard library imports
 from pathlib import Path
-# import time
-import os       # os.getcwd()
+import os
 
 
 # External imports
 import torch
 from transformers import pipeline
-# from transformers import DistilBertForQuestionAnswering, DistilBertTokenizer
-from transformers import AutoModel, AutoTokenizer
-
-# Package imports
-# from counselor_agent import BertCounselorAgent as Counselor
-# from secretary_agent import BertSecretaryAgent as Secretary
 
 # DistilBert
 class AgentClient:
@@ -26,9 +19,8 @@ class AgentClient:
 
 
     def init_counselor_model(self):
-        print(os.getcwd())
-        model_path = Path("backend", "agents", "model_bin")
-        model_path /= "TinyLlama-1.1B-Chat-v1.0"
+        # model_path = Path("backend", "agents", "model_bin")
+        # model_path /= "TinyLlama-1.1B-Chat-v1.0"
         # if model_path.is_dir():
         #     # Load from local storage
         #     print("Loading counselor model from local storage")
@@ -50,6 +42,7 @@ class AgentClient:
             proposal: str,
             personality: str
         ) -> str:
+        """ Form an inital viewpoint based on a proposal and counselor personality. """
         messages = [
             {
                 "role": "system",
@@ -78,6 +71,7 @@ class AgentClient:
             opinion: str,
             external: str
         ) -> str:
+        """ Adjust the current viewpoint according to arguments from other agents. """
         messages = [
             {
                 "role": "system",
@@ -98,7 +92,6 @@ class AgentClient:
             {
                 "role": "user",
                 "content": f"A summarization of the opinions of the other counselors in the meeting is as follow: '{external}'. Write an opinion about their viewpoints."
-                # "content": f"Other counselors have told their views and opinions about the proposal. A summary of their opinions and arguments are {external}. What is your opinion about the proposal when considering the opinions and viewpoints of the other counsil members?"
             }
         ]
         prompt = self.counselor.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
@@ -114,6 +107,7 @@ class AgentClient:
             opinion: str,
             personality: str
         ) -> bool:
+        """ Vote to accept or reject a proposal based on the persona and viewpoint of a counselor. """
         messages = [
             {
                 "role": "system",

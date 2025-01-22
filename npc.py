@@ -53,7 +53,7 @@ class NPC:
         personality = f"""
 You are roleplaying as a city counselor and will answer questions like a city counselor would. \
 Answer all questions considering the following personality: \
-Your name is {info["name"]}, aged 47 years old. You are a member of the city council \
+Your name is {info["name"]}, aged {info["age"]} years old. You are a member of the city council \
 and are currently in a meeting to discuss a proposal about the city. \
 You live in the {info["lives in"]}. Your main mode of transport is \
 {info["main mode of transport"]} and your preferred mode of transport is \
